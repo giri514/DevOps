@@ -1,0 +1,37 @@
+Git
+
+
+1. git config - This command sets the author name and email address respectively to be used with your commits.
+Usage: git config –global user.name “[name]”  
+Usage: git config –global user.email “[email address]”  
+Usage: git config –global -edit Edit and add multiple profile
+
+2. git clone - This command is used to obtain a repository from an existing URL.
+3. git init - This command is used to start a new repository.
+4. git add - This command adds a file to the staging area.
+5. git commit -m - This command records or snapshots the file permanently in the version history.
+6. git commit -a - This command commits any files you’ve added with the git add command and also commits any files you’ve changed since then.
+7. git diff - This command shows the file differences which are not yet staged.
+8.  git diff –staged - This command shows the differences between the files in the staging area and the latest version present.
+9. git diff [first branch] [second branch] - This command shows the differences between the two branches mentioned.
+10. git reset [file]  - This command unstages the file, but it preserves the file contents.
+11. git reset [commit]  - This command undoes all the commits after the specified commit and preserves the changes locally.
+12. git reset –hard [commit] - This command discards all history and goes back to the specified commit.
+13. git rm [file]   - This command deletes the file from your working directory and stages the deletion.
+14. git log - This command is used to list the version history for the current branch.
+15. git log –follow[file]  - This command lists version history for a file, including the renaming of files also.
+16. git show [commit]  - This command shows the metadata and content changes of the specified commit.
+17. git branch  - This command lists all the local branches in the current repository.
+18. git branch -d [branch name]  - This command deletes the feature branch. (Use -D for force delete)
+19. git checkout [branch name] - This command is used to switch from one branch to another.
+20. git merge [branch name] - This command merges the specified branch’s history into the current branch.
+21. git remote add <shortname> <url>  - This command is used to connect your local repository to the remote server.
+22. git push [variable name] [branch]  - This command sends the branch commits to your remote repository.
+23. git stash - This command temporarily stores all the modified tracked files.
+24. git stash apply stash name - To restore the changes that was on hold. 
+25.  git rebase - Git rebase similar to the git merge command. It integrates two branches into a single branch with one exception. A git rebase command rewrites the commit history.
+26. git revert - Undoes a committed snapshot. When you discover a faulty commit, reverting is a safe and easy way to completely remove it from the code base.
+27. git cherry-pick <commit-hash> - It's a robust command and allows you to pick any commit from any branch and apply it to any other branch.
+28. git archive --format zip HEAD > archive-HEAD.zip - It will create a zip archive of the current revision.
+
+---------------------------------------
