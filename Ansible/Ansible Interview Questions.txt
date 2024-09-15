@@ -1,0 +1,211 @@
+1. Explain how to access shell environment variables.
+Ans: You can access the controlling machine’s existing variables by using the “env” lookup plugin. For instance, to access the value of the management machine’s home environment variable, you’d enter:
+
+local_home:”{{lookup(‘env’,’HOME’)}}”
+
+2. What are tags?
+Ans: When there’s an extensive playbook involved, sometimes it’s more expedient to run just a part of it as opposed to the entire thing. That’s what tags are for.
+You can filter out tasks in one of two ways:
+    a)Use –tags or –skip-tags options on the command line
+    b)If you’re in Ansible configuration settings, use the TAGS_RUN and TAGS_SKIP options.
+
+3. In Ansible, Explain what an ask_pass module is?
+Ans: In Ansible, the ask_pass module is a configuration option that prompts the user for the SSH password when connecting to remote hosts. By default, Ansible uses SSH keys for authentication. However, if password-based SSH authentication is required, the ask_pass option can be enabled.
+When ask_pass is set to True, Ansible will prompt you for the SSH password every time it tries to connect to a remote host.
+Use the --ask-pass (or -k) flag when running an Ansible playbook or command and also you can set 'ask_pass' in the Ansible configuration file.
+When to Use?
+The ask_pass module is useful when:
+    You are managing remote hosts that require password-based SSH authentication.
+    SSH keys are not set up or not available.
+    You're running Ansible commands interactively and need to authenticate on-the-fly.
+
+4.  What are “facts” in the context of Ansible?
+Ans: In Ansible, "facts" refer to automatically collected pieces of information about the remote systems (also known as managed nodes) that Ansible interacts with. These facts are gathered at the start of an Ansible run by a special module called the setup module.
+By default, when you run a playbook or execute a task, Ansible gathers facts automatically at the beginning of the play. These facts include details like the IP address, hostname, OS type, memory, CPU details, disk space, network interfaces, and much more.
+Commonly used facts: ansible_hostname, ansible_default_ipv4.address, ansible_distribution(The name of the OS distribution (e.g., Ubuntu, CentOS)), ansible_memory_mb
+You can also create custom facts by placing files in /etc/ansible/facts.d/ on the managed node. These facts are stored in JSON, INI, or executable scripts.
+To create custom facts in Ansible, you can place files in the `/etc/ansible/facts.d/` directory on the managed node. These files can be in JSON, INI, or executable script format. Here's how you can do it:
+
+### Steps to Create Custom Facts
+
+A. **Create the Directory** (if it doesn’t already exist):
+   - On the managed node, create the directory `/etc/ansible/facts.d/` if it doesn't already exist.
+   ```bash
+   sudo mkdir -p /etc/ansible/facts.d/
+   ```
+
+B. **Create a Custom Fact File**:
+   - You can create a fact file in JSON, INI, or script format.
+   - The file should have a `.fact` extension for INI format or any executable extension like `.sh`, `.py`, etc., for scripts.
+
+   **Example 1: INI File**
+   ```ini
+   # /etc/ansible/facts.d/custom.fact
+   [general]
+   app_version = 1.0.2
+   environment = production
+   ```
+
+   **Example 2: JSON File**
+   ```json
+   {
+       "custom_fact": {
+           "app_version": "1.0.2",
+           "environment": "production"
+       }
+   }
+   ```
+
+   **Example 3: Bash Script**
+   ```bash
+   # /etc/ansible/facts.d/custom.sh
+   #!/bin/bash
+   echo '{"custom_fact": {"app_version": "1.0.2", "environment": "production"}}'
+   ```
+
+   - **Important**: Ensure script files are executable.
+   ```bash
+   sudo chmod +x /etc/ansible/facts.d/custom.sh
+   ```
+
+C. **Verify the Custom Fact**:
+   - You can verify the custom fact by using the `setup` module in Ansible to gather all facts or filter for your custom fact.
+
+   **Using the `ansible` command-line tool**:
+   ```bash
+   ansible all -m setup -a 'filter=ansible_local.custom_fact'
+   ```
+
+   **Output**:
+   ```json
+   {
+       "ansible_facts": {
+           "ansible_local": {
+               "custom_fact": {
+                   "app_version": "1.0.2",
+                   "environment": "production"
+               }
+           }
+       }
+   }
+   ```
+
+D. **Use the Custom Fact in a Playbook**:
+   - Now, you can use this custom fact in your Ansible playbooks as you would with any other fact.
+
+   **Example**:
+   ```yaml
+   - hosts: webservers
+     tasks:
+       - name: Display custom facts
+         debug:
+           msg: "App version is {{ ansible_local.custom_fact.app_version }} and environment is {{ ansible_local.custom_fact.environment }}"
+   ```
+
+This is how you create and use custom facts in Ansible. These custom facts allow you to enrich the information available to your playbooks, making them more flexible and powerful.
+
+5. What is Ansible Galaxy?
+Ans: Galaxy is a repository of Ansible roles that can be shared among users and can be directly dropped into playbooks for execution. This is a tool bundled with Ansible to create a base directory structure. Galaxy is a website that lets users find and share Ansible content. You can use this command to download roles from the website: ansible-galaxy install username.role_name
+
+6. What are handlers?
+Ans: In Ansible, handlers are special tasks that are triggered by other tasks upon a specific condition, usually when something has changed. They are often used to perform actions like restarting services, reloading configuration files, or any other task that should only happen if a preceding task made a change.
+How Handlers Work
+   A)Definition:
+        Handlers are defined like regular tasks but are listed under a handlers section.
+        They have a name that other tasks can reference.
+
+   B)Triggering a Handler:
+        A task can trigger a handler by using the notify directive. When the task successfully changes something (e.g., installs a package, updates a configuration file), it notifies the specified handler.
+
+   C)Execution:
+        Handlers are only executed at the end of a playbook run, after all tasks in that play have been completed.
+        If multiple tasks notify the same handler, it will only run once, no matter how many times it was triggered.
+Key Points to Remember:
+    a)Handlers are idempotent by design. Even if notified multiple times, they only run once per playbook execution.
+    b)Handlers are typically used for actions that need to happen only when a change occurs, like restarting services or reloading configurations.
+    c)They run at the end of the play, after all tasks have completed.
+
+7. Explain Ansible register.
+Ans: Ansible register is used to store the output from task execution in a variable. This is useful when we have different outputs from each remote host. The register value is valid throughout the playbook execution so we can make use of set_fact to manipulate the data and provide input to other tasks accordingly.
+Example:-
+- hosts: all tasks:
+name: find all txt files in /home shell: "find /home -name *.txt" register: find_txt_files
+debug:
+var: find_txt_files
+
+In the above example, we are searching for all .txt files in the remote host’s home folder and then capturing it in find_txt_files and displaying that variable.
+
+8. How can we delegate tasks in Ansible?
+Ans: Task delegation is an important feature of Ansible since there might be use cases where we would want to perform a task on one host with reference to other hosts. We can do this using the delegate_to keyword. 
+For example, if we want to manage nodes in a load balancer pool we can do:
+- hosts: webservers
+ serial: 5
+ 
+ tasks:
+- name: Take machine out of ELB pool
+  ansible.builtin.command: /usr/bin/take_out_of_pool {{ inventory_hostname }}
+  delegate_to: 127.0.0.1
+
+9. Can You Provide An Example Of Using Ansible To Check The Status Of a Service On Multiple Servers?
+Ans: For checking the status of a service on multiple servers using Ansible, you can create a playbook with tasks on using Ansible’s service module.A simple example is listed here:
+
+- name: Check Service Status
+  hosts: your_server_group
+  become: true  # This allows running tasks with elevated privileges (sudo)
+
+  tasks:
+    - name: Check status of the 'your_service_name' service
+       service_facts:
+         name: your_service_name  # Replace with the actual service name
+
+    - name: Display the service status
+       debug:
+         var: ansible_facts.services['your_service_name'].state
+
+Replace ‘your_server_group’ with the appropriate group name of servers from your inventory and ‘your_service_name’ with the actual service name you want to check. This playbook uses Ansible’s service_facts module to gather facts/information about the specified service and then it displays its status using the debug module. To run this playbook run the following command on replacing with your apropriative inventory and playbook file name.
+
+ansible-playbook -i /path/to/your/inventory/file your_playbook.yml
+
+10. How Does The Ansible Synchronize Module Work?
+Ans: The synchronize module of Ansible is used for efficiently copying files between the local and remote systems. It ensures that only the changes between the source and destination are transferred, optimizing the file synchronization process. 
+
+11. Is It Possible To Increase The Ansible reboot Module Timeout To More Than 600 Seconds?
+Ans: Yes, On adjusting the `reboot_timeout` parameter , it is possible to increase the Ansible reboot module timeout in the playbook. This parameter allows users to set a longer timeout if hosts require more time to complete the reboot process.
+
+12. In a Scenario Where You Need To Install Different Packages Based On The Target System’s Operating System, How Would You Approach This Using Ansible?
+Ans: You can use the conditional statements in Ansible playbooks for checking the target system’s operating system and installing different packages on it accordingly. For example, on using `ansible.builtin.when` condition we can install packages based on OS types.
+
+13. How do you securely manage sensitive data like passwords and API keys in Ansible playbooks without using Ansible Vault?
+Ans: Securely managing sensitive data in Ansible playbooks can be achieved using external credential management solutions like HashiCorp Vault or external password management systems. These solutions integrate with Ansible to securely retrieve and manage sensitive information.
+
+14. Scenario 'Rolling Updates'?
+Scenario: Your organization needs to perform rolling updates across multiple servers without causing service downtime. Explain how you would use Ansible to orchestrate the update process.
+Ans: To perform rolling updates using Ansible, I would divide the servers into batches and execute playbook tasks sequentially on each batch. The playbook would include tasks for stopping services, applying updates, and restarting services on each server. Ansible’s serial and delegate_to directives can be used to control the order of execution and manage dependencies between tasks. By carefully orchestrating the update process, we can ensure continuous service availability during the rollout.
+
+15. Scenario 'Zero Downtime Deployment'?
+Scenario: Your organization needs to deploy updates to a critical production system with zero downtime to ensure continuous service availability. Describe how you would use Ansible to orchestrate a zero downtime deployment.
+Ans: To achieve zero downtime deployment using Ansible, I would implement a blue-green deployment strategy where a new version of the application is deployed alongside the existing version without interrupting service. Ansible playbooks would include tasks for provisioning duplicate infrastructure, deploying the new version of the application, and gradually redirecting traffic to the updated servers. By carefully managing the cutover process and monitoring application health, we can ensure seamless deployment with zero downtime.
+
+16. How to configure the jump host to access servers that can not be directly accessed?
+Ans: We should set up ProxyCommand on the ansible_ssh_common_args inventory variable. To connect to the appropriate host, the arguments defined in this variable are added to the scp / ssh / sftp command line.
+For example, 
+
+[gatewayed]
+foo ansible_host=192.0.2.1
+bar ansible_host=192.0.2.2
+
+With the following contents, create the group_vars/gatewayed.yml 
+
+ansible_ssh_common_args: '-o ProxyCommand="ssh -W %h:%p -q user@gateway.example.com"'
+
+When connecting to any hosts in the group gatewayed, Ansible will append these arguments/issues to the command line.
+
+
+
+
+
+
+
+
+
+
