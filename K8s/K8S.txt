@@ -1,0 +1,114 @@
+K8S
+
+1. Etcd
+- etcd is an open source distributed key-value store used to hold and manage the critical information that distributed systems need to keep running. Most notably, it manages the configuration data, state data, and metadata for Kubernetes, the popular container orchestration platform.
+
+2. API server
+ - The kube-api server is the central hub of the Kubernetes cluster that exposes the Kubernetes API.
+End users, and other cluster components, talk to the cluster via the API server. Very
+3. Scheduler
+
+-   The Kubernetes scheduler is a control plane process which assigns Pods to Nodes. The scheduler determines which Nodes are valid placements for each Pod in the scheduling queue according to constraints and available resources. The scheduler then ranks each valid Node and binds the Pod to a suitable Node.
+
+4. Controler manager 
+-   Controllers are programs that runs continuously and watches the actual and desired state of objects(Nodes, Pods, endpoints). If there is a difference in the actual and desired state, it ensures that the kubernetes resource/object is in the desired state. 
+
+5. Kubelet
+- Its an agent that runs on each node in the cluster that is managing and coordinating pods and nodes. Its features include pod deployment, resource management, and health monitoring, all contributing considerably to a Kubernetes cluster's operational stability.
+
+6. Kube proxy * 
+- Kubernetes agent that resides on each node within the cluster. KubeProxy is responsible for managing network traffic between pods in cluster. It runs on each node and is responsible for routing traffic to appropriate pod,  also facilitates communication between pods within the cluster by setting up rules for inter-pod communication.
+continuously monitors the health of back-end pods and updates the network rules accordingly. If a pod becomes unhealthy or is removed, kube-proxy adjusts the network rules to ensure traffic is not routed to that pod.
+
+7. ConfigMap *
+- Kubernetes ConfigMap is designed to store the application’s non-sensitive key-value config data. ConfigMaps allow to keep config values separate from code and container images. 
+
+Once you’ve created a ConfigMap, its content will be saved to your Kubernetes cluster (etcd). Pods can then consume the ConfigMap’s values as environment variables, command line arguments, or filesystem volumes.
+
+8. Secretes
+- Secrets, are designed for storing sensitive information like passwords, API keys, or TLS certificates.  Using a Secret means that you don't need to include confidential data in your application code
+
+A Secret is an object that contains a small amount of sensitive data such as a password, a token, or a key. Such information might otherwise be put in a Pod specification or in a container image. Using a Secret means that you don't need to include confidential data in your application code
+
+
+9. Volumes
+-  A Kubernetes volume is a directory containing data, which can be accessed by containers in a Kubernetes pod.
+
+10. Pods
+-  A pod is the smallest object in Kubernetes. A pod holds a container, and a container is an image of the particular application we want to run
+
+11. Master node(Control plane)
+
+Namespace
+
+Service account - A **Service Account** in Kubernetes is an identity used by pods to interact with the Kubernetes API. It allows applications running in pods to authenticate and perform actions within the cluster, like reading secrets or accessing other resources, without needing to use a user's credentials. Each pod can be assigned a specific service account, defining its permissions and access rights within the cluster.
+
+Whenever you access your Kubernetes cluster with kubectl, you are authenticated by Kubernetes with your user account. User accounts are meant to be used by humans. But when a pod running in the cluster wants to access the Kubernetes API server, it needs to use a service account instead. Service accounts are just like user accounts but for non-humans. That default service account doesn't have any permissions assigned to it.
+
+Annotations:
+ 
+Selector:  A node selector specifies a map of key/value pairs that are defined using custom labels on nodes and selectors specified in pods. For the pod to be eligible to run on a node, the pod must have the same key/value node selector as the label on the node.
+
+
+daemonsets -  DaemonSet is a Kubernetes feature that lets you run a Kubernetes pod on all cluster nodes that meet certain criteria. Every time a new node is added to a cluster, the pod is added to it, and when a node is removed from the cluster, the pod is removed.  DaemonSets are commonly used for tasks that require a background process to run on every node, such as log collection, monitoring, or node management tools.
+
+statefulset - A StatefulSet in Kubernetes is a controller that manages stateful applications by ensuring each pod has a unique, stable identity, persistent storage, and is deployed in a specific order. It's ideal for applications like databases that need consistent data and network identities.
+
+
+12.  Services *
+- 
+There are four types of services that Kubernetes supports: ClusterIP, NodePort, LoadBalancer, and Ingress. Each has their own set of requirements to enable them for your application, so you must understand which one you need before deploying
+
+ClusterIP - ClusterIP is the default service type in Kubernetes, and it provides internal connectivity between different components of our application. Kubernetes assigns a virtual IP address to a ClusterIP service that can solely be accessed from within the cluster during its creation. This IP address is stable and doesn’t change even if the pods behind the service are rescheduled or replaced. ClusterIP services are an excellent choice for internal communication between different components of our application that don’t need to be exposed to the outside world.(Within the cluster only)
+
+NodePort - NodePort service in Kubernetes is a service that is used to expose the application to the internet from where the end-users can access it. If you create a NodePort Service Kubernetes will assign the port within the range of (30000-32767). The application can be accessed by end-users using the node's IP address. (Accessible from outside the cluster via a high-numbered port on the node)
+
+LoadBalancer - LoadBalancer services connect our applications externally, and production environments use them where high availability and scalability are critical. When we create a LoadBalancer service, Kubernetes provisions a load balancer in our cloud environment and forwards the traffic to the nodes running the service.  LoadBalancer services are ideal for applications that need to handle high traffic volumes, such as web applications or APIs. With LoadBalancer services, we can access our application using a single IP address assigned to the load balancer.   
+
+
+ClusterIP (default): Internal clients send requests to a stable internal IP address. NodePort: Clients send requests to the IP address of a node on one or more nodePort values that are specified by the Service. LoadBalancer: Clients send requests to the IP address of a network load balancer.
+
+13. Deployment
+- Deployment tells Kubernetes how to create or modify instances of the pods that hold a containerized application. Deployments can help to efficiently scale the number of replica pods, enable the rollout of updated code in a controlled manner, or roll back to an earlier deployment version if necessary.
+
+Deployment is a method of launching a pod with containerized applications and ensuring that the necessary number of replicas is always running on the cluster.
+
+14.  Container runtime
+- It is responsible for managing the execution and lifecycle of containers within the Kubernetes environment. Kubernetes supports container runtimes such as containerd, CRI-O, and any other implementation of the Kubernetes CRI (Container Runtime Interface)
+
+15. PV - a piece of storage in the cluster that has been provisioned by an administrator or dynamically provisioned using Storage Classes.
+
+16. PVC - A PersistentVolumeClaim (PVC) is a request for storage by a user.
+
+17. Commans * 
+- 	
+
+kubectl cordon my-node                                                # Mark my-node as unschedulable
+kubectl drain my-node                                                 # Drain my-node in preparation for maintenance
+kubectl uncordon my-node                                              # Mark my-node as schedulable
+kubectl top node my-node                                              # Show metrics for a given node
+kubectl cluster-info                                                  # Display addresses of the master and services
+kubectl cluster-info dump                                             # Dump current cluster state to stdout
+kubectl cluster-info dump --output-directory=/path/to/cluster-state   # Dump current cluster state to /path/to/cluster-state
+kubectl delete pod <pod_name> – Delete a pod.
+kubectl describe pod <pod_name> – Display the detailed state of a pods.
+kubectl create pod <pod_name> – Create a pod
+kubectl exec <pod_name> -c <container_name> <command> – Execute a command against a container in a pod. Read more: Using Kubectl Exec: Connect to Your Kubernetes Containers
+kubectl exec -it <pod_name> /bin/sh – Get an interactive shell on a single-container pod.   kubectl exec -it cloudhealth-collector-74544c6c5-wkmlb /bin/sh
+kubectl top pod – Display Resource usage (CPU/Memory/Storage) for pods.
+kubectl annotate pod <pod_name> <annotation> – Add or update the annotations of a pod.
+kubectl label pods <pod_name> new-label=<label name> – Add or update the label of a pod.
+kubectl get pods --show-labels – Get pods and show labels.
+kubectl get replicasets – List ReplicaSets.
+kubectl describe replicasets <replicaset_name> – Display the detailed state of one or more ReplicaSets.
+kubectl scale --replicas=[x] – Scale a ReplicaSet
+kubectl cluster-info - Display endpoint information about the master and services in the cluster
+kubectl config view - Get the configuration of the cluster
+kubectl api-resources - List the API resources that are available
+kubectl get all --all-namespaces - List everything
+kubectl rollout status deployment <deployment_name> - See the rollout status of a deployment
+kubectl get events - List recent events for all resources in the system
+
+https://www.bluematador.com/learn/kubectl-cheatsheet
+
+https://kodekloud.com/blog/clusterip-nodeport-loadbalancer/#:~:text=ClusterIP%20is%20used%20for%20Pod,external%20clients%20outside%20the%20cluster.
