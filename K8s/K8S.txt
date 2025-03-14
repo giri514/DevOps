@@ -103,12 +103,12 @@ PDBs can help ensure that critical services remain online and accessible.
 Operators automate the lifecycle management of applications, making it easier to deploy, configure, and manage complex applications on Kubernetes. Operators can be used to manage databases (like PostgreSQL), message queues (like Kafka), or other complex applications that require specialized knowledge and automation. 
 
 
-How to backup the Etcd & Restore it: 
+32. How to backup the Etcd & Restore it: 
      Take a snapshot of the etcd datastore using etcdctl: ETCDCTL_API=3 etcdctl snapshot save snapshot.db --cacert /etc/kubernetes/pki/etcd/ca.crt --cert /etc/kubernetes/pki/etcd/server.crt --key /etc/kubernetes/pki/etcd/server.key
 
     Restore it: ETCDCTL_API=3 etcdctl snapshot restore snapshot.db --endpoints=https://127.0.0.1:2379 --cacert=/etc/kubernetes/pki/etcd/ca.crt --cert=/etc/kubernetes/pki/etcd/server.crt --key=/etc/kubernetes/pki/etcd/server.key --name=kubeadm-master --data-dir=/var/lib/etcd --initial-cluster=kubeadmmaster=https://10.0.0.4:2380 --initial-cluster-token=etcd-cluster-1 --initial-advertise-peerurls=https://10.0.0.4:2380
 
-30. How to join a node to a Kubernetes cluster: Typically, you can add a node by provisioning a new virtual machine or physical server and installing the Kubernetes components (kubelet, kube-proxy, kubeadm etc.) on it. Then, you join the node to the existing cluster using kubeadm or your cloud provider's tools. 	 
+33. How to join a node to a Kubernetes cluster: Typically, you can add a node by provisioning a new virtual machine or physical server and installing the Kubernetes components (kubelet, kube-proxy, kubeadm etc.) on it. Then, you join the node to the existing cluster using kubeadm or your cloud provider's tools. 	 
 
 Join a new node to a Kubernetes cluster:
 
