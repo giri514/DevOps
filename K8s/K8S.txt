@@ -15,13 +15,13 @@ End users, and other cluster components, talk to the cluster via the API server.
 
 5. Kubelet
 - Its an agent that runs on each node in the cluster that is managing and coordinating pods and nodes. Its features include pod deployment, resource management, and health monitoring, all contributing considerably to a Kubernetes cluster's operational stability.
-
-6. Kube proxy * 
-- Kubernetes agent that resides on each node within the cluster. KubeProxy is responsible for managing network traffic between pods in cluster. It runs on each node and is responsible for routing traffic to appropriate pod,  also facilitates communication between pods within the cluster by setting up rules for inter-pod communication.
+traffic between pods in cluster. It runs on each node and is responsible for routing traffic to appropriate pod,  also facilitates communication between pods within the cluster by setting up rules for inter-pod communication.
 continuously monitors the health of back-end pods and updates the network rules accordingly. If a pod becomes unhealthy or is removed, kube-proxy adjusts the network rules to ensure traffic is not routed to that pod.
 
-7. ConfigMap *
-- Kubernetes ConfigMap is designed to store the application’s non-sensitive key-value config data. ConfigMaps allow to keep config values separate from code and container images. 
+7. ConfigMap  - Kubernetes ConfigMap is a built-in Kubernetes API object that's designed to store your application's non-sensitive key-value config data. ConfigMaps allow you to keep config values separate from your code and container images. Values can be strings or Base64-encoded binary data. Kubernetes ConfigMap is designed to store the application’s non-sensitive key-value config data. ConfigMaps allow to keep config values separate from code and container images. 
+
+
+6. Kube proxy - Kubernetes agent that resides on each node within the cluster. KubeProxy is responsible for managing network 
 
 Once you’ve created a ConfigMap, its content will be saved to your Kubernetes cluster (etcd). Pods can then consume the ConfigMap’s values as environment variables, command line arguments, or filesystem volumes.
 
@@ -38,21 +38,6 @@ A Secret is an object that contains a small amount of sensitive data such as a p
 -  A pod is the smallest object in Kubernetes. A pod holds a container, and a container is an image of the particular application we want to run
 
 11. Master node(Control plane)
-
-Namespace
-
-Service account - A **Service Account** in Kubernetes is an identity used by pods to interact with the Kubernetes API. It allows applications running in pods to authenticate and perform actions within the cluster, like reading secrets or accessing other resources, without needing to use a user's credentials. Each pod can be assigned a specific service account, defining its permissions and access rights within the cluster.
-
-Whenever you access your Kubernetes cluster with kubectl, you are authenticated by Kubernetes with your user account. User accounts are meant to be used by humans. But when a pod running in the cluster wants to access the Kubernetes API server, it needs to use a service account instead. Service accounts are just like user accounts but for non-humans. That default service account doesn't have any permissions assigned to it.
-
-Annotations:
- 
-Selector:  A node selector specifies a map of key/value pairs that are defined using custom labels on nodes and selectors specified in pods. For the pod to be eligible to run on a node, the pod must have the same key/value node selector as the label on the node.
-
-
-daemonsets -  DaemonSet is a Kubernetes feature that lets you run a Kubernetes pod on all cluster nodes that meet certain criteria. Every time a new node is added to a cluster, the pod is added to it, and when a node is removed from the cluster, the pod is removed.  DaemonSets are commonly used for tasks that require a background process to run on every node, such as log collection, monitoring, or node management tools.
-
-statefulset - A StatefulSet in Kubernetes is a controller that manages stateful applications by ensuring each pod has a unique, stable identity, persistent storage, and is deployed in a specific order. It's ideal for applications like databases that need consistent data and network identities.
 
 
 12.  Services *
@@ -80,8 +65,61 @@ Deployment is a method of launching a pod with containerized applications and en
 
 16. PVC - A PersistentVolumeClaim (PVC) is a request for storage by a user.
 
-17. Commans * 
-- 	
+17. Static Pods - Static Pods are managed directly by the kubelet daemon on a specific node, without the API server observing them. They are defined by configuration files located on the node's filesystem and are automatically created and maintained by the kubelet. Static Pods are typically used for running critical system services or for initial bootstrapping of clusters where control plane components need to be deployed directly on the nodes.
+
+18. Init Containers - Init Containers are special containers that run before the main application containers in a pod start. They are designed to perform initialization tasks, such as setting up configuration files, initializing databases, or any other operation necessary for the proper functioning of the application.
+
+19. CRD - Custom Resource Definitions (CRDs) in Kubernetes allow users to define new object types, or "kinds", in a cluster. CRDs extend the Kubernetes API and enable users to create custom resources without adding another API server. 
+
+20. Readiness Probes - A Kubernetes readiness probe is a type of health check that verifies whether a container is ready to receive traffic. If the readiness probe is successful, Kubernetes knows the container is fully up and running and can begin accepting requests. If it's not, Kubernetes waits a bit and tries again.
+
+21. Liveness probes: These probes help you evaluate whether an application that is running in a container is in a healthy state. If not, Kubernetes kills the container and attempts to redeploy it. These are useful when you want to ensure your application is not deadlocked or silently unresponsive.
+
+22. Network interface (NIC) - Container Network Interface (CNI) is a framework for dynamically configuring networking resources.
+
+23. Network Policies - Kubernetes supports network policy via the NetworkPolicy object, which is a Kubernetes resource just like pod, service, ingress, and many others. The role of the Network Policy object is to define how groups of pods are allowed to communicate with each other.
+
+24. Service account - A **Service Account** in Kubernetes is an identity used by pods to interact with the Kubernetes API. It allows applications running in pods to authenticate and perform actions within the cluster, like reading secrets or accessing other resources, without needing to use a user's credentials. Each pod can be assigned a specific service account, defining its permissions and access rights within the cluster.
+
+Whenever you access your Kubernetes cluster with kubectl, you are authenticated by Kubernetes with your user account. User accounts are meant to be used by humans. But when a pod running in the cluster wants to access the Kubernetes API server, it needs to use a service account instead. Service accounts are just like user accounts but for non-humans. That default service account doesn't have any permissions assigned to it.
+ 
+25. Selector:  A node selector specifies a map of key/value pairs that are defined using custom labels on nodes and selectors specified in pods. For the pod to be eligible to run on a node, the pod must have the same key/value node selector as the label on the node.
+
+26 Daemonsets -  DaemonSet is a Kubernetes feature that lets you run a Kubernetes pod on all cluster nodes that meet certain criteria. Every time a new node is added to a cluster, the pod is added to it, and when a node is removed from the cluster, the pod is removed.  DaemonSets are commonly used for tasks that require a background process to run on every node, such as log collection, monitoring, or node management tools.
+
+27. Statefulset - A StatefulSet in Kubernetes is a controller that manages stateful applications by ensuring each pod has a unique, stable identity, persistent storage, and is deployed in a specific order. It's ideal for applications like databases that need consistent data and network identities.
+
+28. Ingress - An API object that manages external access to the services in a cluster, typically HTTP. Ingress may provide load balancing, SSL termination. These are the rules defined within the Ingress resource that determine how incoming traffic should be routed. Rules can be based on host, path, or other criteria
+
+In Kubernetes, the "Ingress default backend" is a service that handles requests that don't match any defined rules in an Ingress object, typically serving a 404 "Not Found" page. If a request comes in that doesn't match any host or path defined in an Ingress rule, the Ingress controller forwards that traffic to the default backend service. 
+
+29. Sidecar Containers - Sidecar containers are the secondary containers that run along with the main application container within the same Pod. These containers are used to enhance or to extend the functionality of the primary app container by providing additional services, or functionality such as logging, monitoring, security, or data synchronization, without directly altering the primary application code
+
+30. PDB - A Pod Disruption Budget (PDB) in Kubernetes is a policy that controls how many pods can be unavailable during voluntary disruptions. PDBs help ensure that applications remain available and reliable. PDBs are useful for applications that need to remain available during voluntary disruptions, such as upgrades, maintenance, or scaling. 
+PDBs can help ensure that critical services remain online and accessible. 
+
+31. Operator - In Kubernetes, an operator is a software extension that uses custom resources to manage applications and their components, automating tasks like deployment, scaling, and upgrades. Operators are application-specific controllers that extend the Kubernetes API, allowing you to manage complex applications and their components using a structured process. Operators interact with the Kubernetes API to observe resources and services, and they use custom resource definitions (CRDs) to define new object types that represent the application's state. 
+
+Operators automate the lifecycle management of applications, making it easier to deploy, configure, and manage complex applications on Kubernetes. Operators can be used to manage databases (like PostgreSQL), message queues (like Kafka), or other complex applications that require specialized knowledge and automation. 
+
+
+How to backup the Etcd & Restore it: 
+     Take a snapshot of the etcd datastore using etcdctl: ETCDCTL_API=3 etcdctl snapshot save snapshot.db --cacert /etc/kubernetes/pki/etcd/ca.crt --cert /etc/kubernetes/pki/etcd/server.crt --key /etc/kubernetes/pki/etcd/server.key
+
+    Restore it: ETCDCTL_API=3 etcdctl snapshot restore snapshot.db --endpoints=https://127.0.0.1:2379 --cacert=/etc/kubernetes/pki/etcd/ca.crt --cert=/etc/kubernetes/pki/etcd/server.crt --key=/etc/kubernetes/pki/etcd/server.key --name=kubeadm-master --data-dir=/var/lib/etcd --initial-cluster=kubeadmmaster=https://10.0.0.4:2380 --initial-cluster-token=etcd-cluster-1 --initial-advertise-peerurls=https://10.0.0.4:2380
+
+30. How to join a node to a Kubernetes cluster: Typically, you can add a node by provisioning a new virtual machine or physical server and installing the Kubernetes components (kubelet, kube-proxy, kubeadm etc.) on it. Then, you join the node to the existing cluster using kubeadm or your cloud provider's tools. 	 
+
+Join a new node to a Kubernetes cluster:
+
+Get the join command: First, you need to generate a join command on the control plane node using:
+# kubeadm token create --print-join-command which will output the necessary details like the token and control plane endpoint. 
+
+Execute on new node: Copy the generated command and execute it on the new node you want to add to the cluster. 
+
+# kubeadm join 192.168.1.101:6443 --token tokentoken.lalalalaqyd3kavez --discovery-token-ca-cert-hash sha256:complexshaoverher
+
+#. Commans *
 
 kubectl cordon my-node                                                # Mark my-node as unschedulable
 kubectl drain my-node                                                 # Drain my-node in preparation for maintenance
